@@ -1,4 +1,5 @@
-import express, { Router } from "express";
+import express, { Request, Response, Router } from "express";
+import { REQUEST_METHOD_MAPPING } from "./constants";
 import { IRoute } from "./decorators/request";
 import { Scanner } from "./Scanner.factory";
 
@@ -30,7 +31,9 @@ export class MozartFactory {
       const routerRoutes = Router();
 
       for (let route of controller.routes) {
-        routerRoutes.get(`/${route.path}`, (req, res) => {
+        (routerRoutes as any)[
+          (REQUEST_METHOD_MAPPING as any)[route.requestMethod]
+        ](`/${route.path}`, (req: Request, res: Response) => {
           const data = route.method(req, res);
 
           if (typeof data === "string") {
