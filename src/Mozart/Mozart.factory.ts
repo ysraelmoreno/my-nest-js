@@ -10,10 +10,16 @@ export interface IController {
 }
 
 export class MozartFactory {
-  static create(module: any) {
+  private module: any;
+
+  constructor(module: any) {
+    this.module = module;
+  }
+
+  create() {
     const app = express();
 
-    const { moduleData, getControllersMetadata } = new Scanner(module);
+    const { moduleData, getControllersMetadata } = new Scanner(this.module);
 
     const routes = MozartFactory.createRoutes(
       getControllersMetadata(moduleData.controllers)
