@@ -1,9 +1,10 @@
-import express, { Request, Response, Router } from "express";
+import express, { Request, Response, Express, Router } from "express";
 import {
-  PARAMS_METADATA,
   PARAMS_PARAM_METADATA,
+  QUERY_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
   REQUEST_PARAM_METADATA,
+  RESPONSE_PARAM_METADATA,
 } from "./constants";
 import { IRoute } from "./decorators/request";
 import { IScanner, Scanner } from "./Scanner.factory";
@@ -14,16 +15,18 @@ export interface IController {
   routes: IRoute[];
 }
 
-export class MozartFactory {
-  private module: any;
+export interface IMozartFactory {
+  create: () => Express;
+}
+
+export class MozartFactory implements IMozartFactory {
   private scanner: IScanner;
 
   constructor(module: any) {
-    this.module = module;
     this.scanner = new Scanner(module);
   }
 
-  create() {
+  public create(): Express {
     const app = express();
 
     const {
@@ -38,7 +41,22 @@ export class MozartFactory {
     return app;
   }
 
-  createRoutes(controllers: IController[]) {
+  private buildParameters(params: any, req: Request, res: Response) {
+    const paramsMapper = {
+      [REQUEST_PARAM_METADATA]: req,
+      [PARAMS_PARAM_METADATA]: req.params,
+      [QUERY_PARAM_METADATA]: req.query,
+      [RESPONSE_PARAM_METADATA]: res,
+    };
+
+    const parameters = params.map((item: any) => {
+      return (paramsMapper as any)[item.type];
+    });
+
+    return parameters;
+  }
+
+  private createRoutes(controllers: IController[]) {
     const router = Router();
 
     for (let controller of controllers) {
@@ -50,14 +68,7 @@ export class MozartFactory {
         (routerRoutes as any)[
           (REQUEST_METHOD_MAPPING as any)[route.requestMethod]
         ](`${route.path}`, (req: Request, res: Response) => {
-          const paramsMapper = {
-            [REQUEST_PARAM_METADATA]: req,
-            [PARAMS_PARAM_METADATA]: req.params,
-          };
-
-          const parameters = params.map((item: any) => {
-            return (paramsMapper as any)[item.type];
-          });
+          const parameters = this.buildParameters(params, req, res);
 
           const data = route.method(...parameters);
 
