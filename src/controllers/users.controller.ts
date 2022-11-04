@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { Controller } from "../Mozart/decorators/Controller";
+import { Req } from "../Mozart/decorators/Req";
 import { Get } from "../Mozart/decorators/request";
 
 @Controller("/users")
@@ -7,7 +8,7 @@ export class UsersController {
   constructor() {}
 
   @Get("test")
-  build(req: Request, res: Response) {
+  build(@Req() test: Request) {
     return "Test";
   }
 }

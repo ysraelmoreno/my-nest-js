@@ -1,8 +1,26 @@
-import { PATH_METADATA, REQUEST_MAPPING, ROUTES_METADATA } from "./constants";
+import {
+  PATH_METADATA,
+  REQUEST_PARAM_METADATA,
+  REQUEST_MAPPING,
+  ROUTES_METADATA,
+  PARAMS_METADATA,
+} from "./constants";
 import { IController } from "./Mozart.factory";
 
-export class Scanner {
-  public moduleData: any;
+export interface IModulesMetadata {
+  controllers: any[];
+  providers: any[];
+  imports: any[];
+}
+export interface IScanner {
+  moduleData: IModulesMetadata;
+  getControllersMetadata: (controllers: IController[]) => IController[];
+  getParamsMetadata: (target: any) => any;
+  getModulesData: (module: any) => IModulesMetadata;
+}
+
+export class Scanner implements IScanner {
+  public moduleData: IModulesMetadata;
 
   constructor(module: any) {
     this.moduleData = this.getModulesData(module);
@@ -27,7 +45,13 @@ export class Scanner {
     return controllersFormatted;
   }
 
-  getModulesData(module: any) {
+  getParamsMetadata(target: any) {
+    const params = Reflect.getMetadata(PARAMS_METADATA, target.controller);
+
+    return params;
+  }
+
+  getModulesData(module: any): IModulesMetadata {
     const [controllers, imports, providers] = [
       REQUEST_MAPPING.controllers,
       REQUEST_MAPPING.imports,

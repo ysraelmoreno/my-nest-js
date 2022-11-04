@@ -1,7 +1,11 @@
 import express, { Request, Response, Router } from "express";
-import { REQUEST_METHOD_MAPPING } from "./constants";
+import {
+  PARAMS_METADATA,
+  REQUEST_METHOD_MAPPING,
+  REQUEST_PARAM_METADATA,
+} from "./constants";
 import { IRoute } from "./decorators/request";
-import { Scanner } from "./Scanner.factory";
+import { IScanner, Scanner } from "./Scanner.factory";
 
 export interface IController {
   controller: any;
@@ -11,36 +15,49 @@ export interface IController {
 
 export class MozartFactory {
   private module: any;
+  private scanner: IScanner;
 
   constructor(module: any) {
     this.module = module;
+    this.scanner = new Scanner(module);
   }
 
   create() {
     const app = express();
 
-    const { moduleData, getControllersMetadata } = new Scanner(this.module);
+    const {
+      getControllersMetadata,
+      moduleData: { controllers },
+    } = this.scanner;
 
-    const routes = MozartFactory.createRoutes(
-      getControllersMetadata(moduleData.controllers)
-    );
+    const routes = this.createRoutes(getControllersMetadata(controllers));
 
     app.use(routes);
 
     return app;
   }
 
-  static createRoutes(controllers: IController[]) {
+  createRoutes(controllers: IController[]) {
     const router = Router();
 
     for (let controller of controllers) {
       const routerRoutes = Router();
 
       for (let route of controller.routes) {
+        const params = this.scanner.getParamsMetadata(controller);
+
         (routerRoutes as any)[
           (REQUEST_METHOD_MAPPING as any)[route.requestMethod]
         ](`/${route.path}`, (req: Request, res: Response) => {
-          const data = route.method(req, res);
+          const paramsMapper = {
+            [REQUEST_PARAM_METADATA]: req,
+          };
+
+          const parameters = params.map((item: any) => {
+            return (paramsMapper as any)[item.type];
+          });
+
+          const data = route.method(...parameters);
 
           if (typeof data === "string") {
             return res.send(data);
