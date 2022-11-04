@@ -1,6 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import {
   PARAMS_METADATA,
+  PARAMS_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
   REQUEST_PARAM_METADATA,
 } from "./constants";
@@ -48,9 +49,10 @@ export class MozartFactory {
 
         (routerRoutes as any)[
           (REQUEST_METHOD_MAPPING as any)[route.requestMethod]
-        ](`/${route.path}`, (req: Request, res: Response) => {
+        ](`${route.path}`, (req: Request, res: Response) => {
           const paramsMapper = {
             [REQUEST_PARAM_METADATA]: req,
+            [PARAMS_PARAM_METADATA]: req.params,
           };
 
           const parameters = params.map((item: any) => {

@@ -21,6 +21,8 @@ export const REQUEST_METHOD_MAPPING = {
 };
 
 export const REQUEST_PARAM_METADATA = "__req_param__";
+export const PARAMS_PARAM_METADATA = "__params_param__";
+
 export const PARAMS_METADATA = "__params__";
 export const METHOD_METADATA = "__method__";
 export const PATH_METADATA = "__path__";
