@@ -1,13 +1,22 @@
+import { Body } from "../Mozart/decorators/Body";
 import { Controller } from "../Mozart/decorators/Controller";
-import { Query } from "../Mozart/decorators/Query";
-import { Get } from "../Mozart/decorators/request";
+import { Get, Post } from "../Mozart/decorators/request";
 
 @Controller("/users")
 export class UsersController {
   constructor() {}
 
-  @Get("/test")
+  @Post("/")
+  test(@Body() body: any) {
+    return {
+      body,
+    };
+  }
+
+  @Get("/")
   build() {
-    return "Test";
+    return {
+      ok: true,
+    };
   }
 }

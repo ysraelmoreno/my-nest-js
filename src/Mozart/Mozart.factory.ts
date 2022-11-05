@@ -1,5 +1,6 @@
 import express, { Request, Response, Express, Router } from "express";
 import {
+  BODY_PARAM_METADATA,
   PARAMS_PARAM_METADATA,
   QUERY_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
@@ -29,6 +30,8 @@ export class MozartFactory implements IMozartFactory {
   public create(): Express {
     const app = express();
 
+    app.use(express.json());
+
     const {
       getControllersMetadata,
       moduleData: { controllers },
@@ -47,6 +50,7 @@ export class MozartFactory implements IMozartFactory {
       [PARAMS_PARAM_METADATA]: req.params,
       [QUERY_PARAM_METADATA]: req.query,
       [RESPONSE_PARAM_METADATA]: res,
+      [BODY_PARAM_METADATA]: req.body,
     };
 
     const parameters = params.map((item: any) => {

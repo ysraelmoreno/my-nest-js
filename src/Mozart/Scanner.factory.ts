@@ -48,7 +48,7 @@ export class Scanner implements IScanner {
   getParamsMetadata(target: any) {
     const params = Reflect.getMetadata(PARAMS_METADATA, target.controller);
 
-    return params;
+    return params ?? [];
   }
 
   getModulesData(module: any): IModulesMetadata {
