@@ -25,6 +25,7 @@ export const PARAMS_PARAM_METADATA = "__params_param__";
 export const QUERY_PARAM_METADATA = "__query_param__";
 export const RESPONSE_PARAM_METADATA = "__response_param__";
 export const BODY_PARAM_METADATA = "__body_param__";
+export const HEADER_PARAM_METADATA = "__header_param__";
 
 export const PARAMS_METADATA = "__params__";
 export const METHOD_METADATA = "__method__";

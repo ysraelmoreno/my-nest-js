@@ -1,6 +1,7 @@
 import express, { Request, Response, Express, Router } from "express";
 import {
   BODY_PARAM_METADATA,
+  HEADER_PARAM_METADATA,
   PARAMS_PARAM_METADATA,
   QUERY_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
@@ -49,8 +50,9 @@ export class MozartFactory implements IMozartFactory {
       [REQUEST_PARAM_METADATA]: req,
       [PARAMS_PARAM_METADATA]: req.params,
       [QUERY_PARAM_METADATA]: req.query,
-      [RESPONSE_PARAM_METADATA]: res,
       [BODY_PARAM_METADATA]: req.body,
+      [HEADER_PARAM_METADATA]: req.headers,
+      [RESPONSE_PARAM_METADATA]: res,
     };
 
     const parameters = params.map((item: any) => {
