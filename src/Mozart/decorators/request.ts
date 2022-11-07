@@ -44,7 +44,7 @@ function constructHttpEndpoint({
     {
       requestMethod,
       path: pathMetadata,
-      method: descriptor.value,
+      method: propertyKey,
     },
   ];
 

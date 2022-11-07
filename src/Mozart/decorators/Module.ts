@@ -19,8 +19,6 @@ export function Module(moduleDTO: IModuleDTO): ClassDecorator {
         (moduleDTO as any)[property],
         target
       );
-
-      Reflect.getMetadata("controllers", target);
     }
   };
 }

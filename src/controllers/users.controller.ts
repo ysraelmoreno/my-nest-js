@@ -1,10 +1,14 @@
 import { Body } from "../Mozart/decorators/Body";
 import { Controller } from "../Mozart/decorators/Controller";
+import { Inject } from "../Mozart/decorators/Inject";
 import { Get, Post } from "../Mozart/decorators/request";
+import { UsersService } from "../services/users.service";
 
 @Controller("/users")
 export class UsersController {
-  constructor() {}
+  constructor(@Inject(UsersService) private readonly testdata: any) {
+    console.log(testdata);
+  }
 
   @Post("/")
   test(@Body() body: any) {

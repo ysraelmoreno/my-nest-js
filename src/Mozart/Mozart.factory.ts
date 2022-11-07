@@ -2,6 +2,7 @@ import express, { Request, Response, Express, Router } from "express";
 import {
   BODY_PARAM_METADATA,
   HEADER_PARAM_METADATA,
+  INJECT_METADATA,
   PARAMS_PARAM_METADATA,
   QUERY_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
@@ -23,9 +24,19 @@ export interface IMozartFactory {
 
 export class MozartFactory implements IMozartFactory {
   private scanner: IScanner;
+  private providersInstance: any[];
 
   constructor(module: any) {
     this.scanner = new Scanner(module);
+    this.providersInstance = this.buildServicesInstance(
+      this.scanner.moduleData.providers
+    );
+  }
+
+  private buildServicesInstance(providers: any[]): any[] {
+    const instances = providers.map((item) => new item());
+
+    return instances;
   }
 
   public create(): Express {
@@ -62,13 +73,44 @@ export class MozartFactory implements IMozartFactory {
     return parameters;
   }
 
+  private getInstances(metadata: any[]) {
+    let instances = [];
+
+    for (let metadataItem of metadata) {
+      if (typeof metadataItem === "string") {
+        const findInstance = this.providersInstance.filter(
+          (item) => item.constructor.name === metadataItem
+        );
+
+        instances.push(findInstance[0]);
+        continue;
+      }
+
+      const findInstance = this.providersInstance.filter(
+        (item) => item.constructor === metadataItem
+      );
+      instances.push(findInstance[0]);
+    }
+
+    return instances;
+  }
+
   private createRoutes(controllers: IController[]) {
     const router = Router();
 
-    for (let controller of controllers) {
+    for (let controllerItem of controllers) {
       const routerRoutes = Router();
 
-      for (let route of controller.routes) {
+      const { controller, routes, path } = controllerItem;
+
+      const instancesOfController = this.getInstances(
+        Reflect.getMetadata(INJECT_METADATA, controller)
+      );
+      const data = this.scanner.getControllerInjectables(controller);
+
+      const instance = new controller(...instancesOfController);
+
+      for (let route of routes) {
         const params = this.scanner.getParamsMetadata(controller);
 
         (routerRoutes as any)[
@@ -76,7 +118,7 @@ export class MozartFactory implements IMozartFactory {
         ](`${route.path}`, (req: Request, res: Response) => {
           const parameters = this.buildParameters(params, req, res);
 
-          const data = route.method(...parameters);
+          const data = instance[route.method](...parameters);
 
           if (typeof data === "string") {
             return res.send(data);
@@ -86,7 +128,7 @@ export class MozartFactory implements IMozartFactory {
         });
       }
 
-      router.use(controller.path, routerRoutes);
+      router.use(path, routerRoutes);
     }
 
     return router;

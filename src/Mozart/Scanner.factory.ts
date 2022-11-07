@@ -1,9 +1,10 @@
 import {
   PATH_METADATA,
-  REQUEST_PARAM_METADATA,
   REQUEST_MAPPING,
   ROUTES_METADATA,
   PARAMS_METADATA,
+  INJECTABLE_METADATA,
+  INJECT_METADATA,
 } from "./constants";
 import { IController } from "./Mozart.factory";
 
@@ -16,6 +17,8 @@ export interface IScanner {
   moduleData: IModulesMetadata;
   getControllersMetadata: (controllers: IController[]) => IController[];
   getParamsMetadata: (target: any) => any;
+  getProviderMetadata: (provider: any) => any;
+  getControllerInjectables: (controller: any) => any;
   getModulesData: (module: any) => IModulesMetadata;
 }
 
@@ -45,8 +48,20 @@ export class Scanner implements IScanner {
     return controllersFormatted;
   }
 
+  getProviderMetadata(provider: any) {
+    const providers = Reflect.getMetadata(INJECTABLE_METADATA, provider);
+
+    return providers;
+  }
+
+  getControllerInjectables(controller: any) {
+    const injectables = Reflect.getMetadata(INJECT_METADATA, controller);
+
+    return injectables;
+  }
+
   getParamsMetadata(target: any) {
-    const params = Reflect.getMetadata(PARAMS_METADATA, target.controller);
+    const params = Reflect.getMetadata(PARAMS_METADATA, target);
 
     return params ?? [];
   }
