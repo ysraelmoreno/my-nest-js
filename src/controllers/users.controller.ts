@@ -17,8 +17,6 @@ export class UsersController {
 
   @Get("/")
   build() {
-    return {
-      ok: true,
-    };
+    return this.usersService.getData();
   }
 }

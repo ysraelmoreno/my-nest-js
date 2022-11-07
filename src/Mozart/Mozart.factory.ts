@@ -103,10 +103,8 @@ export class MozartFactory implements IMozartFactory {
 
       const { controller, routes, path } = controllerItem;
 
-      const instancesOfController = this.getInstances(
-        Reflect.getMetadata(INJECT_METADATA, controller)
-      );
       const data = this.scanner.getControllerInjectables(controller);
+      const instancesOfController = this.getInstances(data);
 
       const instance = new controller(...instancesOfController);
 
