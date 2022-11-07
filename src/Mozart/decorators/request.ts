@@ -15,11 +15,9 @@ interface IConstructorEndpoint {
   path?: string;
   target: any;
   propertyKey: string;
-  descriptor: PropertyDescriptor;
 }
 
 function constructHttpEndpoint({
-  descriptor,
   path,
   propertyKey,
   requestMethod,
@@ -58,7 +56,6 @@ export function Post(path?: string) {
     descriptor: PropertyDescriptor
   ) {
     constructHttpEndpoint({
-      descriptor,
       propertyKey,
       requestMethod: REQUEST_METHOD.POST,
       target,
@@ -75,7 +72,6 @@ export function Get(path?: string) {
   ) {
     constructHttpEndpoint({
       requestMethod: REQUEST_METHOD.GET,
-      descriptor,
       path,
       propertyKey,
       target,

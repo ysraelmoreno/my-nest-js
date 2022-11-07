@@ -2,7 +2,6 @@ import express, { Request, Response, Express, Router } from "express";
 import {
   BODY_PARAM_METADATA,
   HEADER_PARAM_METADATA,
-  INJECT_METADATA,
   PARAMS_PARAM_METADATA,
   QUERY_PARAM_METADATA,
   REQUEST_METHOD_MAPPING,
@@ -109,21 +108,23 @@ export class MozartFactory implements IMozartFactory {
       const instance = new controller(...instancesOfController);
 
       for (let route of routes) {
+        const { method, path: routePath, requestMethod } = route;
         const params = this.scanner.getParamsMetadata(controller);
 
-        (routerRoutes as any)[
-          (REQUEST_METHOD_MAPPING as any)[route.requestMethod]
-        ](`${route.path}`, (req: Request, res: Response) => {
-          const parameters = this.buildParameters(params, req, res);
+        (routerRoutes as any)[(REQUEST_METHOD_MAPPING as any)[requestMethod]](
+          `${routePath}`,
+          (req: Request, res: Response) => {
+            const parameters = this.buildParameters(params, req, res);
 
-          const data = instance[route.method](...parameters);
+            const data = instance[method](...parameters);
 
-          if (typeof data === "string") {
-            return res.send(data);
+            if (typeof data === "string") {
+              return res.send(data);
+            }
+
+            res.json(data);
           }
-
-          res.json(data);
-        });
+        );
       }
 
       router.use(path, routerRoutes);
