@@ -27,9 +27,8 @@ export class MozartFactory implements IMozartFactory {
 
   constructor(module: any) {
     this.scanner = new Scanner(module);
-    this.providersInstance = this.buildServicesInstance(
-      this.scanner.moduleData.providers
-    );
+    const { providers } = this.scanner.moduleData;
+    this.providersInstance = this.buildServicesInstance(providers);
   }
 
   private buildServicesInstance(providers: any[]): any[] {
