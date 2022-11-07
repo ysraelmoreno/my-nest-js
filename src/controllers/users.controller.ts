@@ -6,9 +6,7 @@ import { UsersService } from "../services/users.service";
 
 @Controller("/users")
 export class UsersController {
-  constructor(@Inject(UsersService) private readonly testdata: any) {
-    console.log(testdata);
-  }
+  constructor(@Inject(UsersService) private readonly usersService: any) {}
 
   @Post("/")
   test(@Body() body: any) {
