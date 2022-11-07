@@ -107,8 +107,7 @@ export class MozartFactory implements IMozartFactory {
 
       const instance = new controller(...instancesOfController);
 
-      for (let route of routes) {
-        const { method, path: routePath, requestMethod } = route;
+      for (let { method, path: routePath, requestMethod } of routes) {
         const params = this.scanner.getParamsMetadata(controller);
 
         (routerRoutes as any)[(REQUEST_METHOD_MAPPING as any)[requestMethod]](
