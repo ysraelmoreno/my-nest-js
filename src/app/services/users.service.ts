@@ -6,9 +6,14 @@ export class UsersService {
   constructor() {}
 
   addUser(user: any) {
-    this.users.push(user);
+    const newUser = {
+      id: this.users.length + 1,
+      ...user,
+    };
 
-    return user;
+    this.users.push(newUser);
+
+    return newUser;
   }
 
   getUsers() {
