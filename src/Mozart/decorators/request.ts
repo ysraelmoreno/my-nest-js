@@ -2,7 +2,7 @@ import {
   PROPERTY_KEY_METADATA,
   REQUEST_METHOD,
   ROUTES_METADATA,
-} from "../constants";
+} from "@mozart/constants";
 
 export interface IRoute {
   requestMethod: number;

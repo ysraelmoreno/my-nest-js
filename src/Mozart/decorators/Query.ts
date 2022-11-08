@@ -1,5 +1,5 @@
-import { QUERY_PARAM_METADATA } from "../constants";
-import { ConstructParametersDecorator } from "./ConstructParametersDecorator";
+import { QUERY_PARAM_METADATA } from "@mozart/constants";
+import { ConstructParametersDecorator } from "@mozart/decorators";
 
 export function Query() {
   return (target: any, propertyName: string, _: any) =>

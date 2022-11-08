@@ -1,5 +1,5 @@
-import { REQUEST_MAPPING } from "../constants";
-import { validateModuleKeys } from "../utils/validatorModuleProperty";
+import { REQUEST_MAPPING } from "@mozart/constants";
+import { validateModuleKeys } from "@mozart/utils/validatorModuleProperty";
 
 interface IModuleDTO {
   providers: any[];

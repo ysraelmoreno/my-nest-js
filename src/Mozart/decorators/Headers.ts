@@ -1,5 +1,5 @@
-import { HEADER_PARAM_METADATA } from "../constants";
-import { ConstructParametersDecorator } from "./ConstructParametersDecorator";
+import { HEADER_PARAM_METADATA } from "@mozart/constants";
+import { ConstructParametersDecorator } from "@mozart/decorators";
 
 export function Header() {
   return (target: any, propertyName: string, _: any) =>

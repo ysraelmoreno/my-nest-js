@@ -1,7 +1,7 @@
-import { Body } from "../Mozart/decorators/Body";
-import { Controller } from "../Mozart/decorators/Controller";
-import { Inject } from "../Mozart/decorators/Inject";
-import { Get, Post } from "../Mozart/decorators/request";
+import { Body } from "@mozart/decorators/Body";
+import { Controller } from "@mozart/decorators/Controller";
+import { Inject } from "@mozart/decorators/Inject";
+import { Get, Post } from "@mozart/decorators/request";
 import { UsersService } from "../services/users.service";
 
 @Controller("/users")
@@ -9,14 +9,12 @@ export class UsersController {
   constructor(@Inject(UsersService) private readonly usersService: any) {}
 
   @Post("/")
-  test(@Body() body: any) {
-    return {
-      body,
-    };
+  add(@Body() user: any) {
+    return this.usersService.addUser(user);
   }
 
   @Get("/")
-  build() {
-    return this.usersService.getData();
+  list() {
+    return this.usersService.getUsers();
   }
 }

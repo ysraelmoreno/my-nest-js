@@ -1,5 +1,5 @@
-import { PARAMS_METADATA, REQUEST_PARAM_METADATA } from "../constants";
-import { ConstructParametersDecorator } from "./ConstructParametersDecorator";
+import { REQUEST_PARAM_METADATA } from "@mozart/constants";
+import { ConstructParametersDecorator } from "@mozart/decorators";
 
 export function Req() {
   return (target: any, propertyName: string, _: any) =>

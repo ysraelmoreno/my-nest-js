@@ -1,4 +1,4 @@
-import { PARAMS_METADATA } from "../constants";
+import { PARAMS_METADATA } from "@mozart/constants";
 
 export function ConstructParametersDecorator(
   parameter: string,

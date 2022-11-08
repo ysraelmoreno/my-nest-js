@@ -1,4 +1,4 @@
-import { CONTROLLER_METADATA, PATH_METADATA } from "../constants";
+import { CONTROLLER_METADATA, PATH_METADATA } from "@mozart/constants";
 
 export function Controller(path: string): ClassDecorator {
   return function (target: any) {

@@ -1,4 +1,4 @@
-import { INJECTABLE_METADATA } from "../constants";
+import { INJECTABLE_METADATA } from "@mozart/constants";
 
 export function Injectable() {
   return (target: any) => {

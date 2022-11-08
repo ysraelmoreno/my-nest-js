@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { AppModule } from "./app.module";
-import { MozartFactory } from "./Mozart/Mozart.factory";
+import { MozartFactory } from "@mozart/core";
 
 async function bootstrap() {
   const app = new MozartFactory(AppModule).create();

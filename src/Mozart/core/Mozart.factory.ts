@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { Request, Response, Express, Router } from "express";
 import {
   BODY_PARAM_METADATA,
@@ -7,9 +8,9 @@ import {
   REQUEST_METHOD_MAPPING,
   REQUEST_PARAM_METADATA,
   RESPONSE_PARAM_METADATA,
-} from "./constants";
-import { IRoute } from "./decorators/request";
-import { IScanner, Scanner } from "./Scanner.factory";
+} from "@mozart/constants";
+import { IRoute } from "@mozart/decorators";
+import { IScanner, Scanner } from "@mozart/core";
 
 export interface IController {
   controller: any;

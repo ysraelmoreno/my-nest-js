@@ -20,6 +20,9 @@ export const REQUEST_METHOD_MAPPING = {
   4: "delete",
 };
 
+export const DEFAULT_STATUS_CODE = 200;
+export const HTTP_CODE_METADATA = "__http_code__";
+
 export const REQUEST_PARAM_METADATA = "__req_param__";
 export const PARAMS_PARAM_METADATA = "__params_param__";
 export const QUERY_PARAM_METADATA = "__query_param__";

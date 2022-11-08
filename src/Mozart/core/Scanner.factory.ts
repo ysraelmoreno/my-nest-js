@@ -5,8 +5,8 @@ import {
   PARAMS_METADATA,
   INJECTABLE_METADATA,
   INJECT_METADATA,
-} from "./constants";
-import { IController } from "./Mozart.factory";
+} from "@mozart/constants";
+import { IController } from "@mozart/core";
 
 export interface IModulesMetadata {
   controllers: any[];

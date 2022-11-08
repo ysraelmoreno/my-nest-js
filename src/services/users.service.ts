@@ -1,10 +1,17 @@
-import { Injectable } from "../Mozart/decorators/Injectable";
+import { Injectable } from "@mozart/decorators";
 
 @Injectable()
 export class UsersService {
+  private users: any[] = [];
   constructor() {}
 
-  getData() {
-    return "Data";
+  addUser(user: any) {
+    this.users.push(user);
+
+    return user;
+  }
+
+  getUsers() {
+    return this.users;
   }
 }

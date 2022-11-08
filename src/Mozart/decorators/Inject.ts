@@ -1,4 +1,4 @@
-import { INJECT_METADATA } from "../constants";
+import { INJECT_METADATA } from "@mozart/constants";
 
 export function Inject(value: any) {
   return function (target: any, _: string, paramIndex: number) {
