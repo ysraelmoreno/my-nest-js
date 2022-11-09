@@ -10,6 +10,13 @@ export interface IUser {
 export class UsersService {
   private users: IUser[] = [];
 
+  findUser(id: number) {
+    const findUser = this.users.filter((user) => user.id === id);
+
+    console.log("findUser", findUser);
+    return findUser;
+  }
+
   addUser(user: Omit<IUser, "id">) {
     const newUser = {
       id: this.users.length + 1,

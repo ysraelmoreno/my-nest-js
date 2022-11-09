@@ -45,22 +45,16 @@ export class Scanner implements IScanner {
   }
 
   getControllersMetadata(controllers: IController[]): IController[] {
-    let controllersFormatted: IController[] = [];
-    for (let controller of controllers) {
+    return controllers.map((controller) => {
       const controllerPath = Reflect.getMetadata(PATH_METADATA, controller);
       const routes = Reflect.getMetadata(ROUTES_METADATA, controller);
 
-      controllersFormatted = [
-        ...controllersFormatted,
-        {
-          controller,
-          path: controllerPath,
-          routes,
-        },
-      ];
-    }
-
-    return controllersFormatted;
+      return {
+        controller,
+        path: controllerPath,
+        routes,
+      };
+    });
   }
 
   getProviderMetadata(provider: any) {

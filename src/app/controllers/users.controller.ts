@@ -1,4 +1,4 @@
-import { HttpCode } from "@mozart/decorators";
+import { HttpCode, Param } from "@mozart/decorators";
 import { Body } from "@mozart/decorators/Body";
 import { Controller } from "@mozart/decorators/Controller";
 import { Inject } from "@mozart/decorators/Inject";
@@ -15,6 +15,11 @@ export class UsersController {
   @HttpCode(201)
   add(@Body() user: Omit<IUser, "id">) {
     return this.usersService.addUser(user);
+  }
+
+  @Get("/:id")
+  find(@Param() { id }: any) {
+    return this.usersService.findUser(Number(id));
   }
 
   @Get("/")

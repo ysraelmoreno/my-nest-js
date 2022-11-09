@@ -57,7 +57,16 @@ export class MozartFactory implements IMozartFactory {
     return app;
   }
 
-  private buildParameters(params: any, req: Request, res: Response) {
+  private buildParameters(
+    params: any,
+    method: string,
+    req: Request,
+    res: Response
+  ): Record<string, any>[] {
+    const parametersFromMethod = params.filter(
+      (param: any) => param.propertyName === method
+    );
+
     const paramsMapper = {
       [REQUEST_PARAM_METADATA]: req,
       [PARAMS_PARAM_METADATA]: req.params,
@@ -67,7 +76,7 @@ export class MozartFactory implements IMozartFactory {
       [RESPONSE_PARAM_METADATA]: res,
     };
 
-    const parameters = params.map((item: any) => {
+    const parameters = parametersFromMethod.map((item: any) => {
       return (paramsMapper as any)[item.type];
     });
 
@@ -108,16 +117,15 @@ export class MozartFactory implements IMozartFactory {
       const instance = new controller(...instancesOfController);
 
       for (let { method, path: routePath, requestMethod } of routes) {
-        const params = this.scanner.getParamsMetadata(controller);
-
         const routerMethod = (
           REQUEST_METHOD_MAPPING as RequestMethodMappingInterface
         )[requestMethod];
+        const params = this.scanner.getParamsMetadata(controller);
 
         routerRoutes[routerMethod](
           `${routePath}`,
           (req: Request, res: Response) => {
-            const parameters = this.buildParameters(params, req, res);
+            const parameters = this.buildParameters(params, method, req, res);
             const { method: methodKey, code } =
               this.scanner.getHttpCode(controller);
 
