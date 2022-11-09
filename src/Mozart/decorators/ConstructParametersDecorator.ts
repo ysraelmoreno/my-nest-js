@@ -1,4 +1,5 @@
 import { PARAMS_METADATA } from "@mozart/constants";
+import { IParametersMetadata } from "@mozart/interfaces";
 
 export function ConstructParametersDecorator(
   parameter: string,
@@ -13,7 +14,7 @@ export function ConstructParametersDecorator(
     target.constructor
   );
 
-  const params = [
+  const params: IParametersMetadata[] = [
     ...currentParams,
     {
       type: parameter,

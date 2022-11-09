@@ -5,21 +5,30 @@ import {
   PARAMS_METADATA,
   INJECTABLE_METADATA,
   INJECT_METADATA,
+  HTTP_CODE_METADATA,
 } from "@mozart/constants";
 import { IController } from "@mozart/core";
+import { IParametersMetadata } from "@mozart/interfaces";
 
 export interface IModulesMetadata {
   controllers: any[];
   providers: any[];
   imports: any[];
 }
+
+export interface IHttpCode {
+  code: number;
+  method: string;
+}
+
 export interface IScanner {
   moduleData: IModulesMetadata;
   getControllersMetadata: (controllers: IController[]) => IController[];
-  getParamsMetadata: (target: any) => any;
+  getParamsMetadata: (target: any) => IParametersMetadata[];
   getProviderMetadata: (provider: any) => any;
   getControllerInjectables: (controller: any) => any;
   getModulesData: (module: any) => IModulesMetadata;
+  getHttpCode: (controller: any) => IHttpCode;
 }
 
 export class Scanner implements IScanner {
@@ -27,6 +36,12 @@ export class Scanner implements IScanner {
 
   constructor(module: any) {
     this.moduleData = this.getModulesData(module);
+  }
+
+  getHttpCode(controller: any): IHttpCode {
+    const statusCode = Reflect.getMetadata(HTTP_CODE_METADATA, controller);
+
+    return statusCode;
   }
 
   getControllersMetadata(controllers: IController[]): IController[] {
@@ -60,7 +75,7 @@ export class Scanner implements IScanner {
     return injectables;
   }
 
-  getParamsMetadata(target: any) {
+  getParamsMetadata(target: any): IParametersMetadata[] {
     const params = Reflect.getMetadata(PARAMS_METADATA, target);
 
     return params ?? [];

@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response, Express, Router } from "express";
 import {
   BODY_PARAM_METADATA,
+  DEFAULT_STATUS_CODE,
   HEADER_PARAM_METADATA,
   PARAMS_PARAM_METADATA,
   QUERY_PARAM_METADATA,
@@ -11,6 +12,7 @@ import {
 } from "@mozart/constants";
 import { IRoute } from "@mozart/decorators";
 import { IScanner, Scanner } from "@mozart/core";
+import { RequestMethodMappingInterface } from "@mozart/interfaces";
 
 export interface IController {
   controller: any;
@@ -77,43 +79,47 @@ export class MozartFactory implements IMozartFactory {
 
     for (let metadataItem of metadata) {
       if (typeof metadataItem === "string") {
-        const findInstance = this.providersInstance.filter(
+        const [findInstance] = this.providersInstance.filter(
           (item) => item.constructor.name === metadataItem
         );
 
-        instances.push(findInstance[0]);
+        instances.push(findInstance);
         continue;
       }
 
-      const findInstance = this.providersInstance.filter(
+      const [findInstance] = this.providersInstance.filter(
         (item) => item.constructor === metadataItem
       );
-      instances.push(findInstance[0]);
+      instances.push(findInstance);
     }
 
     return instances;
   }
 
-  private createRoutes(controllers: IController[]) {
+  private createRoutes(controllers: IController[]): Router {
     const router = Router();
 
-    for (let controllerItem of controllers) {
+    for (let { controller, routes, path } of controllers) {
       const routerRoutes = Router();
 
-      const { controller, routes, path } = controllerItem;
-
-      const data = this.scanner.getControllerInjectables(controller);
-      const instancesOfController = this.getInstances(data);
+      const services = this.scanner.getControllerInjectables(controller);
+      const instancesOfController = this.getInstances(services);
 
       const instance = new controller(...instancesOfController);
 
       for (let { method, path: routePath, requestMethod } of routes) {
         const params = this.scanner.getParamsMetadata(controller);
 
-        (routerRoutes as any)[(REQUEST_METHOD_MAPPING as any)[requestMethod]](
+        const routerMethod = (
+          REQUEST_METHOD_MAPPING as RequestMethodMappingInterface
+        )[requestMethod];
+
+        routerRoutes[routerMethod](
           `${routePath}`,
           (req: Request, res: Response) => {
             const parameters = this.buildParameters(params, req, res);
+            const { method: methodKey, code } =
+              this.scanner.getHttpCode(controller);
 
             const data = instance[method](...parameters);
 
@@ -121,7 +127,9 @@ export class MozartFactory implements IMozartFactory {
               return res.send(data);
             }
 
-            res.json(data);
+            res
+              .status(methodKey === method ? code : DEFAULT_STATUS_CODE)
+              .json(data);
           }
         );
       }

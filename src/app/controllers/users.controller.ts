@@ -1,15 +1,19 @@
+import { HttpCode } from "@mozart/decorators";
 import { Body } from "@mozart/decorators/Body";
 import { Controller } from "@mozart/decorators/Controller";
 import { Inject } from "@mozart/decorators/Inject";
 import { Get, Post } from "@mozart/decorators/request";
-import { UsersService } from "../services/users.service";
+import { IUser, UsersService } from "../services/users.service";
 
 @Controller("/users")
 export class UsersController {
-  constructor(@Inject(UsersService) private readonly usersService: any) {}
+  constructor(
+    @Inject(UsersService) private readonly usersService: UsersService
+  ) {}
 
   @Post("/")
-  add(@Body() user: any) {
+  @HttpCode(201)
+  add(@Body() user: Omit<IUser, "id">) {
     return this.usersService.addUser(user);
   }
 

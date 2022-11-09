@@ -1,3 +1,5 @@
+import { RequestMethodMappingInterface } from "@mozart/interfaces";
+
 export enum REQUEST_METHOD {
   "GET",
   "POST",
@@ -16,9 +18,8 @@ export const REQUEST_METHOD_MAPPING = {
   0: "get",
   1: "post",
   2: "patch",
-  3: "update",
-  4: "delete",
-};
+  3: "delete",
+} as RequestMethodMappingInterface;
 
 export const DEFAULT_STATUS_CODE = 200;
 export const HTTP_CODE_METADATA = "__http_code__";
