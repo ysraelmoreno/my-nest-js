@@ -22,7 +22,7 @@ export interface IHttpCode {
 }
 
 export interface IScanner {
-  moduleData: IModulesMetadata;
+  modules: IModulesMetadata;
   getControllersMetadata: (controllers: IController[]) => IController[];
   getParamsMetadata: (target: any) => IParametersMetadata[];
   getProviderMetadata: (provider: any) => any;
@@ -32,10 +32,10 @@ export interface IScanner {
 }
 
 export class Scanner implements IScanner {
-  public moduleData: IModulesMetadata;
+  public modules: IModulesMetadata;
 
   constructor(module: any) {
-    this.moduleData = this.getModulesData(module);
+    this.modules = this.getModulesData(module);
   }
 
   getHttpCode(controller: any): IHttpCode {

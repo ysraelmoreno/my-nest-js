@@ -30,7 +30,7 @@ export class MozartFactory implements IMozartFactory {
 
   constructor(module: any) {
     this.scanner = new Scanner(module);
-    const { providers } = this.scanner.moduleData;
+    const { providers } = this.scanner.modules;
     this.providersInstance = this.buildServicesInstance(providers);
   }
 
@@ -47,7 +47,7 @@ export class MozartFactory implements IMozartFactory {
 
     const {
       getControllersMetadata,
-      moduleData: { controllers },
+      modules: { controllers },
     } = this.scanner;
 
     const routes = this.createRoutes(getControllersMetadata(controllers));

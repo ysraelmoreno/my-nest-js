@@ -9,7 +9,6 @@ export interface IUser {
 @Injectable()
 export class UsersService {
   private users: IUser[] = [];
-  constructor() {}
 
   addUser(user: Omit<IUser, "id">) {
     const newUser = {
@@ -17,7 +16,7 @@ export class UsersService {
       ...user,
     };
 
-    this.users.push(newUser);
+    this.users = [...this.users, newUser];
 
     return newUser;
   }
