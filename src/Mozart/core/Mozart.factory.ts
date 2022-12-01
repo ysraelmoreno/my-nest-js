@@ -35,7 +35,7 @@ export class MozartFactory implements IMozartFactory {
   }
 
   private buildServicesInstance(providers: any[]): any[] {
-    const instances = providers.map((item) => new item());
+    const instances = providers?.map((item) => new item()) ?? [];
 
     return instances;
   }

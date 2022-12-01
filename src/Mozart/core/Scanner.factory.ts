@@ -6,6 +6,7 @@ import {
   INJECTABLE_METADATA,
   INJECT_METADATA,
   HTTP_CODE_METADATA,
+  DEFAULT_STATUS_CODE,
 } from "@mozart/constants";
 import { IController } from "@mozart/core";
 import { IParametersMetadata } from "@mozart/interfaces";
@@ -16,13 +17,15 @@ export interface IModulesMetadata {
   imports: any[];
 }
 
+export type IAppModule = Omit<IModulesMetadata, "imports">;
+
 export interface IHttpCode {
   code: number;
   method: string;
 }
 
 export interface IScanner {
-  modules: IModulesMetadata;
+  modules: IAppModule;
   getControllersMetadata: (controllers: IController[]) => IController[];
   getParamsMetadata: (target: any) => IParametersMetadata[];
   getProviderMetadata: (provider: any) => any;
@@ -32,16 +35,35 @@ export interface IScanner {
 }
 
 export class Scanner implements IScanner {
-  public modules: IModulesMetadata;
+  public modules: IAppModule;
 
   constructor(module: any) {
     this.modules = this.getModulesData(module);
   }
 
   getHttpCode(controller: any): IHttpCode {
-    const statusCode = Reflect.getMetadata(HTTP_CODE_METADATA, controller);
+    const statusCode =
+      Reflect.getMetadata(HTTP_CODE_METADATA, controller) ??
+      DEFAULT_STATUS_CODE;
 
     return statusCode;
+  }
+
+  constructAppModules(module: any) {
+    const { controllers, imports, providers } = this.getModulesData(module);
+    let controllersModule = controllers;
+    let providersModule = providers;
+
+    if (imports?.length > 0) {
+      for (const module of imports) {
+        const { controllers, providers } = this.constructAppModules(module);
+
+        providersModule.push(...providers);
+        controllersModule.push(...controllers);
+      }
+    }
+
+    return { controllers: controllersModule, providers: providersModule };
   }
 
   getControllersMetadata(controllers: IController[]): IController[] {
@@ -64,7 +86,7 @@ export class Scanner implements IScanner {
   }
 
   getControllerInjectables(controller: any) {
-    const injectables = Reflect.getMetadata(INJECT_METADATA, controller);
+    const injectables = Reflect.getMetadata(INJECT_METADATA, controller) ?? [];
 
     return injectables;
   }

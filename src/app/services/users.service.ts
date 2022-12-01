@@ -8,12 +8,17 @@ export interface IUser {
 
 @Injectable()
 export class UsersService {
-  private users: IUser[] = [];
+  private users: IUser[] = [
+    {
+      id: 1,
+      name: "Ysrael Moreno",
+      password: "123456",
+    },
+  ];
 
   findUser(id: number) {
     const findUser = this.users.filter((user) => user.id === id);
 
-    console.log("findUser", findUser);
     return findUser;
   }
 
