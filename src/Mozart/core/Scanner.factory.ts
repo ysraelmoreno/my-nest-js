@@ -38,7 +38,7 @@ export class Scanner implements IScanner {
   public modules: IAppModule;
 
   constructor(module: any) {
-    this.modules = this.getModulesData(module);
+    this.modules = this.constructAppModules(module);
   }
 
   getHttpCode(controller: any): IHttpCode {
