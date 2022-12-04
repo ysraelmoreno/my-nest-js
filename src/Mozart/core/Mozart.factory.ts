@@ -31,7 +31,8 @@ export class MozartFactory implements IMozartFactory {
   constructor(module: any) {
     this.scanner = new Scanner(module);
     const { providers } = this.scanner.modules;
-    this.providersInstance = this.buildServicesInstance(providers);
+
+    this.providersInstance = this.buildServicesInstance(providers ?? []);
   }
 
   private buildServicesInstance(providers: any[]): any[] {
@@ -50,7 +51,7 @@ export class MozartFactory implements IMozartFactory {
       modules: { controllers },
     } = this.scanner;
 
-    const routes = this.createRoutes(getControllersMetadata(controllers));
+    const routes = this.createRoutes(getControllersMetadata(controllers ?? []));
 
     app.use(routes);
 

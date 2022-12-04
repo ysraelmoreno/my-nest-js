@@ -37,6 +37,7 @@ export const PATH_METADATA = "__path__";
 export const CONTROLLER_METADATA = "__controller__";
 export const INJECTABLES_METADATA = "__injectables_providers__";
 export const INJECTABLE_METADATA = "__injectable__";
+export const IS_INJECTABLE = "__is_injectable__";
 export const INJECT_METADATA = "__inject__";
 export const PROPERTY_KEY_METADATA = "__property__";
 export const ROUTES_METADATA = "__routes__";

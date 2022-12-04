@@ -7,14 +7,15 @@ import {
   INJECT_METADATA,
   HTTP_CODE_METADATA,
   DEFAULT_STATUS_CODE,
+  IS_INJECTABLE,
 } from "@mozart/constants";
 import { IController } from "@mozart/core";
 import { IParametersMetadata } from "@mozart/interfaces";
 
 export interface IModulesMetadata {
-  controllers: any[];
-  providers: any[];
-  imports: any[];
+  controllers?: any[];
+  providers?: any[];
+  imports?: any[];
 }
 
 export type IAppModule = Omit<IModulesMetadata, "imports">;
@@ -51,12 +52,22 @@ export class Scanner implements IScanner {
 
   constructAppModules(module: any) {
     const { controllers, imports, providers } = this.getModulesData(module);
+
+    if (!controllers) return {};
+    if (!providers) return {};
+
     let controllersModule = controllers;
     let providersModule = providers;
 
-    if (imports?.length > 0) {
+    if (imports && imports?.length > 0) {
       for (const module of imports) {
-        const { controllers, providers } = this.constructAppModules(module);
+        const modulesData = this.constructAppModules(module);
+
+        if (!modulesData) break;
+
+        const { controllers, providers } = modulesData;
+
+        if (!providers) break;
 
         providersModule.push(...providers);
         controllersModule.push(...controllers);
@@ -97,6 +108,16 @@ export class Scanner implements IScanner {
     return params ?? [];
   }
 
+  verifyInjectableState(provider: any) {
+    const isInjectable = Reflect.getMetadata(IS_INJECTABLE, provider);
+
+    if (!isInjectable) {
+      throw new Error("Provider is not injectable");
+    }
+
+    return provider;
+  }
+
   getModulesData(module: any): IModulesMetadata {
     const [controllers, imports, providers] = [
       REQUEST_MAPPING.controllers,
@@ -111,7 +132,7 @@ export class Scanner implements IScanner {
     return {
       controllers,
       imports,
-      providers,
+      providers: providers.map(this.verifyInjectableState),
     };
   }
 }
